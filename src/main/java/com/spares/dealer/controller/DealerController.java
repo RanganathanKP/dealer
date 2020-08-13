@@ -42,7 +42,7 @@ public class DealerController {
 		return productRepository.save(product);
 	}
 
-	@GetMapping("/dealer/findAllProduct")
+	@GetMapping("/dealer/findAllProductByUser")
 	@ResponseBody
 	public List<productEntity> findAllProduct(){
 		return productRepository.findAll();
@@ -59,6 +59,8 @@ public class DealerController {
 	public productEntity findProductByID(@PathVariable int productid){
 		return productRepository.findById(productid).get();
 	}
+
+	// service of Status update must be added
 
 
 
