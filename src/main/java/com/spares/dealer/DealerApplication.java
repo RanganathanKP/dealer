@@ -1,4 +1,4 @@
-package com.spares.dealer.applicaiton;
+package com.spares.dealer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

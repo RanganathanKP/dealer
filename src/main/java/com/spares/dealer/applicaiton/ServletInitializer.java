@@ -1,6 +1,6 @@
 package com.spares.dealer.applicaiton;
 
-import com.spares.dealer.applicaiton.DealerApplication;
+import com.spares.dealer.DealerApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
