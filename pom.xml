@@ -14,8 +14,8 @@
 	<artifactId>dealer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>admin</name>
-	<description>admin project</description>
+	<name>Auto_Spare</name>
+	<description>Auto Spare</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -31,14 +31,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-rest</artifactId> 
-			</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -87,7 +83,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
@@ -102,10 +97,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
-		<!-- <dependency> <groupId>io.springfox</groupId> <artifactId>springfox-boot-starter</artifactId> 
-			<version>3.0.0</version> </dependency> -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.4.4.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
