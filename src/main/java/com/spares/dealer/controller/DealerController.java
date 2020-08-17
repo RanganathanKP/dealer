@@ -1,16 +1,19 @@
 package com.spares.dealer.controller;
 
-import com.spares.dealer.entity.UserEntity;
-import com.spares.dealer.entity.productEntity;
+import com.spares.dealer.entity.ProductEntity;
 import com.spares.dealer.repository.ProductRepository;
 import com.spares.dealer.repository.UserRepository;
 import com.spares.dealer.service.MyUserDetailsService;
+import com.spares.dealer.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
+@RequestMapping("/dealer")
 @RestController
 public class DealerController {
 
@@ -23,41 +26,45 @@ public class DealerController {
 	@Autowired
 	private MyUserDetailsService myuserDetailsService;
 
+	@Autowired
+	private ProductService productService;
 
 
-	@PostMapping("dealer/saveProduct")
+
+	@PostMapping("/saveProduct")
 	@ResponseBody
-	public productEntity saveproduct(@RequestBody productEntity product, @RequestHeader Integer userid ){
-		UserEntity user=userRepo.getOne(userid);
-		product.setProductDealername(user.getCompanyName());
-		return productRepository.save(product);
+	public ResponseEntity<ProductEntity> saveproduct(@RequestBody ProductEntity product, @RequestHeader String authorization){
+		ProductEntity productResponse= productService.saveProduct(product, authorization);
+		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
-	@PutMapping("dealer/updateProduct/{productid}")
+	@PutMapping("/updateProduct/{productid}")
 	@ResponseBody
-	public productEntity updateproduct(@RequestBody productEntity product,@PathVariable int productid, @RequestHeader Integer userid ){
-		UserEntity user=userRepo.getOne(userid);
-		product.setProductId(productid);
-		product.setProductDealername(user.getCompanyName());
-		return productRepository.save(product);
+	public ResponseEntity<ProductEntity> updateproduct(@RequestBody ProductEntity product, @PathVariable Integer productid, @RequestHeader String authorization ){
+		ProductEntity productResponse= productService.updateProduct( product, productid,  authorization);
+		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/dealer/findAllProductByUser")
+	@GetMapping("/findAllProduct")
 	@ResponseBody
-	public List<productEntity> findAllProduct(){
-		return productRepository.findAll();
+	public ResponseEntity<List<ProductEntity>>findAllProduct(@RequestParam(value="userID",required = false) Integer userid){
+		List<ProductEntity> productResponse= productService.viewProduct(userid);
+		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/dealer/findNewProduct")
+	@GetMapping("/findNewProduct")
 	@ResponseBody
-	public List<productEntity> findNewProduct(){
-		return productRepository.findlatestProduct();
+	public ResponseEntity<List<ProductEntity>> findNewProduct(@RequestParam(value="userID",required = false) Integer userid){
+		List<ProductEntity> productResponse= productService.viewLatestProduct(userid);
+		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/dealer/findProduct/{productid}")
+	@GetMapping("/findProduct/{productid}")
 	@ResponseBody
-	public productEntity findProductByID(@PathVariable int productid){
-		return productRepository.findById(productid).get();
+	public ResponseEntity<ProductEntity> findProductByID(@PathVariable int productid){
+		ProductEntity productResponse=  productRepository.findById(productid).get();
+		return new ResponseEntity<>(productResponse, HttpStatus.OK);
+
 	}
 
 	// service of Status update must be added
