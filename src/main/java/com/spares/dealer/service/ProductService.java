@@ -54,7 +54,6 @@ public class ProductService {
             } else {
                 throw new UserNotFoundException();
             }
-
             return response;
     }
 
@@ -76,7 +75,7 @@ public class ProductService {
         String usenamePassword = new String(actualByte);
         String username = usenamePassword.substring(0, usenamePassword.indexOf(":"));
         String password = usenamePassword.substring(usenamePassword.indexOf(":") + 1);
-        return userRepo.findByUserNameAndPassword(username, password).get();
+        return userRepo.findByUserName(username).orElseThrow(()->new UserNotFoundException());
     }
 
 }

@@ -14,6 +14,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Query(value = "SELECT * FROM test_spare.product where productcreationtime>(current_date()-1)", nativeQuery = true)
     List<ProductEntity> findlatestProduct();
 
-
     List<ProductEntity> findByProductUserID(Integer userid);
 }
