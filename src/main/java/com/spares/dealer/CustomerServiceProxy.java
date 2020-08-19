@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 public interface CustomerServiceProxy {
 
 
-    @GetMapping("customer/getOrderDetail/{orderDetailID}")
+    @GetMapping("/sparecustomer/customer/getOrderDetail/{orderDetailID}")
     @ResponseBody
     public  ResponseEntity<OrderDetailEntity>getorderdetail(@PathVariable Integer orderDetailID);
 
-    @PostMapping("/customer/updatestatus/")
+    @PostMapping("/sparecustomer/customer/updatestatus/")
     @ResponseBody
     public  ResponseEntity<OrderDetailEntity> updateOrderStatus(@RequestHeader String Authorization,@RequestBody OrderDetailEntity orderDetailEntity);
 
-    @GetMapping("orderDetailEntities/search/findByDealerID?userid={dealerID}")
+    @GetMapping("/sparecustomer/orderDetailEntities/search/findByDealerID?userid={dealerID}")
     @ResponseBody
     public CollectionModel<OrderDetailEntity> findByDealerID(@PathVariable Integer dealerID);
 
-    @GetMapping("orderDetailEntities/search/findByOrderDetailStatusAndDealerID?status={status}&userid={dealerID}")
+    @GetMapping("/sparecustomer/orderDetailEntities/search/findByOrderDetailStatusAndDealerID?status={status}&userid={dealerID}")
     @ResponseBody
     public  CollectionModel<OrderDetailEntity>findByOrderDetailStatusAndDealerID(@PathVariable String status,@PathVariable Integer dealerID);
 

@@ -1,14 +1,11 @@
 package com.spares.dealer.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spares.dealer.CustomerServiceProxy;
 import com.spares.dealer.entity.OrderDetailEntity;
 import com.spares.dealer.entity.UserEntity;
 import com.spares.dealer.entity.ProductEntity;
-import com.spares.dealer.exception.CustomerException;
 import com.spares.dealer.exception.ProductException;
 import com.spares.dealer.exception.ProductNotFoundException;
 import com.spares.dealer.exception.UserNotFoundException;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -46,87 +42,86 @@ public class ProductService {
     }
 
     public ProductEntity updateProduct(ProductEntity product, Integer productID, String authorization) {
-        ProductEntity response=new ProductEntity();
+        ProductEntity response = new ProductEntity();
         UserEntity user = getLoginedInUser(authorization);
         ProductEntity productDetails = productRepository.findById(productID).orElseThrow(() -> new ProductNotFoundException());
-        if (productDetails.getProductUserID()==user.getUserId()) {
+        if (productDetails.getProductUserID() == user.getUserId()) {
             product.setProductId(productID);
             product.setProductUserID(user.getUserId());
-            response= productRepository.save(product);
+            response = productRepository.save(product);
         } else {
             throw new UserNotFoundException();
         }
         return response;
     }
 
-    public OrderDetailEntity updateOrderStatus(Integer orderDetailID,String auth){
-        UserEntity user=getLoginedInUser(auth);
-        OrderDetailEntity response=new OrderDetailEntity();
-        ResponseEntity<OrderDetailEntity> orderDetail=customerServiceProxy.getorderdetail(orderDetailID);
-        if(!(Optional.ofNullable(orderDetail.getBody()).isPresent()&&Optional.ofNullable(orderDetail.getBody().getOrderdetailId()).isPresent())){
-            throw new ProductException("Enter valid order Detail ID.");
-        }else{
-            if(user.getUserId()==orderDetail.getBody().getUserID()&&user.getUserRole().equalsIgnoreCase("Dealer")){
-                orderDetail.getBody().setOrderDetailStatus("DISPATCHED");
-                response= customerServiceProxy.updateOrderStatus(auth,orderDetail.getBody()).getBody();
-            }else{
-                throw new ProductException("Order does not belong to the User.");
+    public OrderDetailEntity updateOrderStatus(Integer orderDetailID, String auth) {
+        UserEntity user = getLoginedInUser(auth);
+        OrderDetailEntity response = new OrderDetailEntity();
+        if(user.getUserRole().equalsIgnoreCase("Dealer")) {
+            ResponseEntity<OrderDetailEntity> orderDetail = customerServiceProxy.getorderdetail(orderDetailID);
+            if (!(Optional.ofNullable(orderDetail.getBody()).isPresent() && Optional.ofNullable(orderDetail.getBody().getOrderdetailId()).isPresent())) {
+                throw new ProductException("Enter valid order Detail ID.");
+            } else {
+                if (user.getUserId() == orderDetail.getBody().getDealerID()) {
+                    orderDetail.getBody().setOrderDetailStatus("DISPATCHED");
+                    response = customerServiceProxy.updateOrderStatus(auth, orderDetail.getBody()).getBody();
+                } else {
+                    throw new ProductException("Order does not belong to the User.");
+                }
             }
+            return response;
+        }else{
+            throw new ProductException("Only Dealer can update The Order");
         }
-        return response;
     }
 
     public List<ProductEntity> viewProduct() {
         List<ProductEntity> response;
-        response= Optional.ofNullable(productRepository.findAll()).orElseThrow(() -> new ProductNotFoundException());
+        response = Optional.ofNullable(productRepository.findAll()).orElseThrow(() -> new ProductNotFoundException());
         return response;
     }
 
 
-    //    public List<ProductEntity> viewLatestProduct(Integer userID) {
-//        List<ProductEntity> response=Optional.ofNullable(productRepository.findlatestProduct()).orElseThrow(() -> new ProductNotFoundException());
-//        if(Optional.ofNullable(userID).isPresent()){
-//            response= response.stream().filter(product->product.getProductUserID()==userID).collect(Collectors.toList());
-//            if(CollectionUtils.isEmpty(response)){
-//                throw new ProductNotFoundException();
-//            }
-//        }
-//        return response;
-//    }
-
-
-
-    public ProductEntity viewproductbyid(Integer productid){
-        ProductEntity productResponse=productRepository.findById(productid).orElseThrow(()->new ProductNotFoundException());
-        if(!Optional.ofNullable(productResponse).isPresent()){
+    public ProductEntity viewproductbyid(Integer productid) {
+        ProductEntity productResponse = productRepository.findById(productid).orElseThrow(() -> new ProductNotFoundException());
+        if (!Optional.ofNullable(productResponse).isPresent()) {
             throw new ProductNotFoundException();
         }
         return productResponse;
     }
 
 
-    public List<OrderDetailEntity> allOrderOfDealer(String auth){
-        List<OrderDetailEntity> response= new ArrayList<>();
-        UserEntity user=getLoginedInUser(auth);
-        CollectionModel<OrderDetailEntity>orderDetail= customerServiceProxy.findByDealerID(user.getUserId());
-        response=new ArrayList(orderDetail.getContent());
-        if(CollectionUtils.isEmpty(response)){
-            throw new CustomerException("No Orders Placed");
-        }else{
+    public List<OrderDetailEntity> allOrderOfDealer(String auth) {
+        List<OrderDetailEntity> response = new ArrayList<>();
+        UserEntity user = getLoginedInUser(auth);
+        CollectionModel<OrderDetailEntity> orderDetail = customerServiceProxy.findByDealerID(user.getUserId());
+        if(Optional.ofNullable(orderDetail).isPresent()){
+            response = new ArrayList(orderDetail.getContent());
+        if (CollectionUtils.isEmpty(response)) {
+            throw new ProductException("No Orders Placed");
+        } else {
             return response;
+        }
+        }else{
+            throw new ProductException("No Orders Placed");
         }
     }
 
-    public List<OrderDetailEntity> placedOrderOfDealer(String auth){
-        List<OrderDetailEntity> response= new ArrayList<>();
-        UserEntity user=getLoginedInUser(auth);
+    public List<OrderDetailEntity> placedOrderOfDealer(String auth) {
+        List<OrderDetailEntity> response = new ArrayList<>();
+        UserEntity user = getLoginedInUser(auth);
         ObjectMapper mapper = new ObjectMapper();
-        CollectionModel<OrderDetailEntity>orderDetail = customerServiceProxy.findByOrderDetailStatusAndDealerID("PLACED", user.getUserId());
-        response=new ArrayList(orderDetail.getContent());
-        if(CollectionUtils.isEmpty(response)){
-            throw new CustomerException("No Orders Placed");
+        CollectionModel<OrderDetailEntity> orderDetail = customerServiceProxy.findByOrderDetailStatusAndDealerID("PLACED", user.getUserId());
+        if(Optional.ofNullable(orderDetail).isPresent()) {
+            response = new ArrayList(orderDetail.getContent());
+            if (CollectionUtils.isEmpty(response)) {
+                throw new ProductException("No Orders Placed");
+            } else {
+                return response;
+            }
         }else{
-            return response;
+            throw new ProductException("No Orders Placed");
         }
     }
 
@@ -137,7 +132,7 @@ public class ProductService {
         String usenamePassword = new String(actualByte);
         String username = usenamePassword.substring(0, usenamePassword.indexOf(":"));
         String password = usenamePassword.substring(usenamePassword.indexOf(":") + 1);
-        return userRepo.findByUserName(username).orElseThrow(()->new UserNotFoundException());
+        return userRepo.findByUserName(username).orElseThrow(() -> new UserNotFoundException());
     }
 
 }

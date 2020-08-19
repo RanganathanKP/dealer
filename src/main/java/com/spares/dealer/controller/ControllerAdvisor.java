@@ -1,6 +1,7 @@
 package com.spares.dealer.controller;
 
 import com.spares.dealer.DTO.ErrorDTO;
+import com.spares.dealer.exception.ProductException;
 import com.spares.dealer.exception.ProductNotFoundException;
 import com.spares.dealer.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,14 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
             UserNotFoundException ex, WebRequest request) {
         logger.info(ex);
         ErrorDTO error= new ErrorDTO("Error","Product not Owned By user");
+        return new ResponseEntity<>(error, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<Object> handleProductException(
+            ProductException ex, WebRequest request) {
+        logger.info(ex);
+        ErrorDTO error= new ErrorDTO("Error",ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.OK);
     }
 
