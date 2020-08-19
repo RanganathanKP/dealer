@@ -1,5 +1,7 @@
 package com.spares.dealer.controller;
 
+import com.spares.dealer.CustomerServiceProxy;
+import com.spares.dealer.entity.OrderDetailEntity;
 import com.spares.dealer.entity.ProductEntity;
 import com.spares.dealer.repository.ProductRepository;
 import com.spares.dealer.repository.UserRepository;
@@ -31,6 +33,8 @@ public class DealerController {
 
 
 
+
+
 	@PostMapping("/saveProduct")
 	@ResponseBody
 	public ResponseEntity<ProductEntity> saveproduct(@RequestBody ProductEntity product, @RequestHeader String authorization){
@@ -45,29 +49,45 @@ public class DealerController {
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
+	@GetMapping("/updatestatus/{orderdetailid}")
+	@ResponseBody
+	public  ResponseEntity<OrderDetailEntity>updateOrderStatus(@PathVariable Integer orderdetailid, @RequestHeader String Authorization){
+		OrderDetailEntity response= productService.updateOrderStatus(orderdetailid,Authorization);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	//Called in Customer Service/admin service(client)
 	@GetMapping("/findAllProduct")
 	@ResponseBody
-	public ResponseEntity<List<ProductEntity>>findAllProduct(@RequestParam(value="userID",required = false) Integer userid){
-		List<ProductEntity> productResponse= productService.viewProduct(userid);
+	public ResponseEntity<List<ProductEntity>>findAllProduct(){
+		List<ProductEntity> productResponse= productService.viewProduct();
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/findNewProduct")
-	@ResponseBody
-	public ResponseEntity<List<ProductEntity>> findNewProduct(@RequestParam(value="userID",required = false) Integer userid){
-		List<ProductEntity> productResponse= productService.viewLatestProduct(userid);
-		return new ResponseEntity<>(productResponse, HttpStatus.OK);
-	}
-
+	//Called in Customer Service(client)
 	@GetMapping("/findProduct/{productid}")
 	@ResponseBody
-	public ResponseEntity<ProductEntity> findProductByID(@PathVariable int productid){
-		ProductEntity productResponse=  productRepository.findById(productid).get();
+	public ResponseEntity<ProductEntity> findProductByID(@PathVariable Integer productid){
+		ProductEntity productResponse=  new ProductEntity();
+        productResponse= productService.viewproductbyid(productid);
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
-
 	}
 
-	// service of Status update must be added
+	//view order for dealer purpose
+	@GetMapping("/getOrderOfDealer")
+	@ResponseBody
+	public  ResponseEntity<List<OrderDetailEntity>>getOrderOfDealer(@RequestHeader String Authorization){
+		List<OrderDetailEntity >response= productService.allOrderOfDealer(Authorization);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+
+	//view order for dealer purpose
+	@GetMapping("/getOrderOfDealerPlaced")
+	@ResponseBody
+	public  ResponseEntity<List<OrderDetailEntity>>getOrderOfDealerPlaced(@RequestHeader String Authorization){
+		List<OrderDetailEntity> response= productService.placedOrderOfDealer(Authorization);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
 
 

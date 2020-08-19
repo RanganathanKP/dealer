@@ -16,12 +16,12 @@ public class ProductEntity {
 	private Integer productId;
 	private String productName;
 	private String productDescription;
-	private String productAmount;
+	private Integer productAmount;
 	@UpdateTimestamp
 	private LocalDateTime productcreationtime;
 	private Integer productUserID;
 
-	public ProductEntity(Integer productId, String productName, String productDescription, String productAmount, Integer productUserID, LocalDateTime productcreationtime) {
+	public ProductEntity(Integer productId, String productName, String productDescription, Integer productAmount, Integer productUserID, LocalDateTime productcreationtime) {
 		this.productId = productId;
 		this.productName = productName;
 		this.productDescription = productDescription;
@@ -65,11 +65,11 @@ public class ProductEntity {
 		this.productDescription = productDescription;
 	}
 
-	public String getProductAmount() {
+	public Integer getProductAmount() {
 		return productAmount;
 	}
 
-	public void setProductAmount(String productAmount) {
+	public void setProductAmount(Integer productAmount) {
 		this.productAmount = productAmount;
 	}
 
