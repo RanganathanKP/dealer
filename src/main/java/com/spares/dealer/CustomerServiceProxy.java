@@ -18,7 +18,7 @@ public interface CustomerServiceProxy {
 
     @PostMapping("/sparecustomer/customer/updatestatus/")
     @ResponseBody
-    public  ResponseEntity<OrderDetailEntity> updateOrderStatus(@RequestHeader String Authorization,@RequestBody OrderDetailEntity orderDetailEntity);
+    public  ResponseEntity<OrderDetailEntity> updateOrderStatus(@RequestHeader String authorization,@RequestBody OrderDetailEntity orderDetailEntity);
 
     @GetMapping("/sparecustomer/orderDetailEntities/search/findByDealerID?userid={dealerID}")
     @ResponseBody

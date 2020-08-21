@@ -1,6 +1,5 @@
 package com.spares.dealer.controller;
 
-import com.spares.dealer.CustomerServiceProxy;
 import com.spares.dealer.entity.OrderDetailEntity;
 import com.spares.dealer.entity.ProductEntity;
 import com.spares.dealer.repository.ProductRepository;
@@ -48,8 +47,8 @@ public class DealerController {
 
     @GetMapping("/updatestatus/{orderdetailid}")
     @ResponseBody
-    public ResponseEntity<OrderDetailEntity> updateOrderStatus(@PathVariable Integer orderdetailid, @RequestHeader String Authorization) {
-        OrderDetailEntity response = productService.updateOrderStatus(orderdetailid, Authorization);
+    public ResponseEntity<OrderDetailEntity> updateOrderStatus(@PathVariable Integer orderdetailid, @RequestHeader String authorization) {
+        OrderDetailEntity response = productService.updateOrderStatus(orderdetailid, authorization);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -65,16 +64,15 @@ public class DealerController {
     @GetMapping("/findProduct/{productid}")
     @ResponseBody
     public ResponseEntity<ProductEntity> findProductByID(@PathVariable Integer productid) {
-        ProductEntity productResponse = new ProductEntity();
-        productResponse = productService.viewproductbyid(productid);
+        ProductEntity productResponse = productService.viewproductbyid(productid);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
     //view order for dealer purpose
     @GetMapping("/getOrderOfDealer")
     @ResponseBody
-    public ResponseEntity<List<OrderDetailEntity>> getOrderOfDealer(@RequestHeader String Authorization) {
-        List<OrderDetailEntity> response = productService.allOrderOfDealer(Authorization);
+    public ResponseEntity<List<OrderDetailEntity>> getOrderOfDealer(@RequestHeader String authorization) {
+        List<OrderDetailEntity> response = productService.allOrderOfDealer(authorization);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -82,8 +80,8 @@ public class DealerController {
     //view order for dealer purpose
     @GetMapping("/getOrderOfDealerPlaced")
     @ResponseBody
-    public ResponseEntity<List<OrderDetailEntity>> getOrderOfDealerPlaced(@RequestHeader String Authorization) {
-        List<OrderDetailEntity> response = productService.placedOrderOfDealer(Authorization);
+    public ResponseEntity<List<OrderDetailEntity>> getOrderOfDealerPlaced(@RequestHeader String authorization) {
+        List<OrderDetailEntity> response = productService.placedOrderOfDealer(authorization);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
